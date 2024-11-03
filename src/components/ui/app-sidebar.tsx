@@ -71,7 +71,7 @@ export function AppSidebar() {
     setActivePage(itemUrl);
   }
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="z-[100]">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -140,13 +140,18 @@ export function AppSidebar() {
               size="lg"
               className="hover:bg-destructive/20 group/ed"
             >
-              <Avatar className="size-9">
-                {/* <AvatarImage
+              {state === "expanded" ? (
+                <Avatar className="size-9">
+                  {/* <AvatarImage
                         src={data.user.avatar}
                         alt={data.user.name}
                       /> */}
-                <AvatarFallback className="">CN</AvatarFallback>
-              </Avatar>
+                  <AvatarFallback className="">CN</AvatarFallback>
+                </Avatar>
+              ) : (
+                <LogOut className="ml-2 size-4 group-hover/ed:text-destructive" />
+              )}
+
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">Farhan</span>
                 <span className="truncate text-xs">darkid@gmail.com</span>
