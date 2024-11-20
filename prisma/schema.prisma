@@ -1,0 +1,152 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+model User {
+    id        String   @id @default(cuid())
+    email     String   @unique
+    name      String?
+    password  String
+    image     String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    role      String   @default("merchant")
+    status    String   @default("pending")
+    shopId    String?  @unique
+    Shop      Shop?    @relation("userToShop", fields: [shopId], references: [id])
+}
+
+model Ticket {
+    id        String    @id @default(cuid())
+    subject   String
+    email     String
+    invoiceId String?
+    shopId    String
+    createdAt DateTime  @default(now())
+    status    String    @default("open")
+    messages  Message[]
+}
+
+model Message {
+    id        String   @id @default(cuid())
+    ticketId  String
+    sender    String
+    content   String
+    createdAt DateTime @default(now())
+    ticket    Ticket   @relation(fields: [ticketId], references: [id])
+}
+
+model Shop {
+    id                                  String     @id @default(cuid())
+    name                                String     @unique
+    image                               String?
+    favicon                             String?
+    subTitle                            String?
+    description                         String?
+    createdAt                           DateTime   @default(now())
+    updatedAt                           DateTime   @updatedAt
+    userId                              String     @unique
+    theme                               Json?
+    currency                            String     @default("USD")
+    productTypes                        String?
+    subDomain                           String     @unique
+    balance                             Float      @default(0)
+    status                              ShopStatus @default(clean)
+    Order                               Order[]
+    Product_Product_shopIdToShop        Product[]  @relation("Product_shopIdToShop")
+    Product_Product_shopSubDomainToShop Product[]  @relation("Product_shopSubDomainToShop")
+    User                                User?      @relation("userToShop")
+}
+
+model Merchant {
+    id        String   @id
+    name      String
+    email     String   @unique
+    shopName  String   @unique
+    password  String
+    createdAt DateTime @default(now())
+}
+
+model Order {
+    id             String   @id
+    customer_name  String
+    revenue        Float
+    shopId         String
+    status         String   @default("paid")
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime
+    customer_email String
+    paymentId      String
+    productIds     String[]
+    quantities     Int[]
+    productNames   String[]
+    variantIds     String[]
+    Shop           Shop     @relation(fields: [shopId], references: [id])
+}
+
+model Product {
+    id                               String    @id
+    price                            Float
+    image                            String?
+    shopId                           String
+    shopSubDomain                    String
+    createdAt                        DateTime  @default(now())
+    updatedAt                        DateTime
+    customDefaultWarranty            Boolean
+    defaultWarrantyText              String?
+    defaultWarrantyTime              String?
+    fullDescription                  String?
+    productName                      String
+    shortDescription                 String?
+    visibility                       String
+    soldCount                        Int       @default(0)
+    stock                            Int       @default(0)
+    Shop_Product_shopIdToShop        Shop      @relation("Product_shopIdToShop", fields: [shopId], references: [id])
+    Shop_Product_shopSubDomainToShop Shop      @relation("Product_shopSubDomainToShop", fields: [shopSubDomain], references: [subDomain])
+    Variant                          Variant[]
+}
+
+model Variant {
+    id                 String   @id
+    name               String
+    shortDescription   String?
+    description        String?
+    price              Float
+    currency           String   @default("USD")
+    productType        String
+    customWarranty     Boolean  @default(false)
+    warrantyTime       String?
+    warrantyText       String?
+    serials            String?
+    parsedSerial       Json?
+    serialParseMethod  String?
+    removeDuplicates   Boolean  @default(false)
+    serviceDescription String?
+    unlimitedStock     Boolean  @default(false)
+    stock              Int      @default(0)
+    minQuantity        Int?
+    maxQuantity        Int?
+    productId          String
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime
+    Product            Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model WaitList {
+    id        String   @id
+    email     String   @unique
+    createdAt DateTime @default(now())
+}
+
+enum ShopStatus {
+    pending
+    clean
+    warned
+    banned
+}

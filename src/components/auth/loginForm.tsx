@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { login } from "@/action/actions";
 // import { login } from "@/actions/actions";
 const initialState = {
   message: null as string | null,
@@ -30,24 +31,30 @@ export default function LoginForm() {
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
-  //   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-  //     event.preventDefault();
-  //     const formData = new FormData(event.currentTarget);
-  //     setPending(true);
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    setPending(true);
 
-  //     const result = await login(state, formData);
-  //     setPending(false);
-
-  //     if ("email" in result?.errors || "password" in result?.errors) {
-  //       setState((prev) => ({
-  //         ...prev,
-  //         errors: result?.errors || {},
-  //         message: result?.message || null,
-  //       }));
-  //     } else if (result?.redirectUrl) {
-  //       router.push(result?.redirectUrl);
-  //     }
-  //   }
+    const result = await login(state, formData);
+    setPending(false);
+    if (
+      "email" in (result?.errors ?? {}) ||
+      "password" in (result?.errors ?? {})
+    ) {
+      setState((prev) => ({
+        ...prev,
+        errors: result?.errors || {},
+      }));
+    } else if (result?.redirectUrl) {
+      console.log(result, "login form");
+      router.push(result?.redirectUrl);
+    }
+    setState((prev) => ({
+      ...prev,
+      message: result?.message || null,
+    }));
+  }
 
   return (
     <Card className="max-w-[390px] border-none shadow-none">
@@ -58,7 +65,7 @@ export default function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -86,15 +93,6 @@ export default function LoginForm() {
             <Button type="submit" className="w-full" disabled={pending}>
               {pending ? "Loading..." : "Login"}
             </Button>
-            {/* <p className="text-sm text-muted-foreground">
-              Not signed up?{" "}
-              <Link href={"/signup"}>
-                <Button variant={"link"} className="p-0 text-primary2">
-                  Sign up
-                </Button>
-              </Link>{" "}
-              for free.
-            </p> */}
           </div>
         </form>
       </CardContent>

@@ -92,7 +92,7 @@ export default function Home() {
               </svg>
             </Link>
             <h1 className="font-clash text-xl font-medium mt-[4px] opacity-70">
-              Admin Dahsboard
+              Admin Dashboard
             </h1>
           </div>
           <Image
@@ -112,7 +112,7 @@ export default function Home() {
         </div>
 
         <div className="form_wrap sm:w-[50%] h-full flex place-items-center justify-center sm:border-l relative">
-          <LoginForm></LoginForm>
+          <LoginForm />
         </div>
       </div>
     </main>

@@ -38,13 +38,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // You can use a Zod schema here if you want.
 
 export type shopBasicDetailsType = {
-  id: number;
-  logo: string;
+  id: string;
+  favicon: string | null;
   name: string;
-  subdomain: string;
-  stripeVerified: boolean;
-  status: "clean" | "warned" | "banned";
-  warnings: { amount: number; list: string[] } | null;
+  subDomain: string;
+  status: "clean" | "warned" | "banned" | "pending";
   balance: number;
   currency: string;
 };
@@ -79,23 +77,23 @@ export const columns: ColumnDef<shopBasicDetailsType>[] = [
       <DataTableColumnHeader column={column} title="Shop Name" />
     ),
     cell: ({ row }) => {
-      const rdata = row.original;
+      const rData = row.original;
       return (
         <div className="flex flex-wrap gap-2 place-items-center">
           <Avatar>
-            <AvatarImage src={rdata.logo}></AvatarImage>
-            <AvatarFallback>{rdata.name?.slice(0, 2)}</AvatarFallback>
+            <AvatarImage src={rData.favicon || ""}></AvatarImage>
+            <AvatarFallback>{rData.name?.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <div className="-mt-2">
             <div className="flex flex-wrap place-items-center md:gap-1">
-              <h2 className="text-sm">{rdata.name}</h2>
+              <h2 className="text-sm">{rData.name}</h2>
               <CopyButton
                 className="p-1 px-3"
-                copyContent={rdata.name}
+                copyContent={rData.name}
               ></CopyButton>
             </div>
             <p className="text-xs text-muted-foreground opacity-85 md:-mt-2">
-              ID: {truncateString(rdata.id?.toString(), 30)}
+              ID: {truncateString(rData.id?.toString(), 30)}
             </p>
           </div>
         </div>
@@ -103,13 +101,13 @@ export const columns: ColumnDef<shopBasicDetailsType>[] = [
     },
   },
   {
-    accessorKey: "subdomain",
+    accessorKey: "subDomain",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Subdomain" />
     ),
 
     cell: ({ row }) => {
-      const value: string = row.getValue("subdomain");
+      const value: string = row.getValue("subDomain");
       return (
         <div className="font-medium">
           {value}{" "}
@@ -134,8 +132,9 @@ export const columns: ColumnDef<shopBasicDetailsType>[] = [
       />
     ),
     cell: ({ row }) => {
-      const varified: boolean = row.getValue("stripeVerified");
-      return varified ? (
+      // need to update in future
+      const verified = true;
+      return verified ? (
         <CheckIcon className="size-5 text-green-500" />
       ) : (
         <X className="size-5 text-red-500" />
@@ -164,35 +163,17 @@ export const columns: ColumnDef<shopBasicDetailsType>[] = [
       <DataTableColumnHeader column={column} title="Balance" />
     ),
     cell: ({ row }) => {
-      const rdata = row.original;
+      const rData = row.original;
       return (
         <div className="flex gap-1">
           <p>
-            {rdata.balance}{" "}
-            <span className="text-muted-foreground/65">{rdata.currency}</span>
+            {rData.balance}{" "}
+            <span className="text-muted-foreground/65">{rData.currency}</span>
           </p>
         </div>
       );
     },
   },
-
-  //   {
-  //     accessorKey: "appliedAt",
-  //     header: ({ column }) => (
-  //       <DataTableColumnHeader column={column} title="Applied At" />
-  //     ),
-  //     cell: ({ row }) => {
-  //       const cell_value: Date = row.getValue("appliedAt");
-  //       return (
-  //         <div className="flex flex-col">
-  //           <p>{dateFormatter(cell_value)}</p>
-  //           <p className="text-xs text-muted-foreground opacity-85">
-  //             {timeAgo(cell_value)}
-  //           </p>
-  //         </div>
-  //       );
-  //     },
-  //   },
 
   {
     id: "actions",
@@ -200,14 +181,14 @@ export const columns: ColumnDef<shopBasicDetailsType>[] = [
     cell: ({ row }) => {
       const rowData = row.original;
       const className = {
-        unban: " text-[#1ED760] focus:bg-[#1ED760]/25",
+        clean: " text-[#1ED760] focus:bg-[#1ED760]/25",
         ban: " text-[#FF5C5C] focus:bg-[#FF5C5C]/25",
         warn: " text-[#FFAE5C] focus:bg-[#FFAE5C]/25",
       };
       return (
         <div className="sm:mr-[-2rem]  pr-0 max-w-[fit-content] flex flex-wrap gap-2">
           <Button variant="ghost">
-            <Link href={`/sellars/profile/${rowData.id}`}>
+            <Link href={`/sellers/profile/${rowData.id}`}>
               <span className="hidden md:inline-block">View</span>Profile
             </Link>
           </Button>
@@ -227,10 +208,6 @@ export const columns: ColumnDef<shopBasicDetailsType>[] = [
               <DropdownMenuItem className={className.warn}>
                 <TriangleAlert className="mr-2 h-4 w-4" />
                 Warn
-              </DropdownMenuItem>
-              <DropdownMenuItem className={className.unban}>
-                <ShieldCheck className="mr-2 h-4 w-4" />
-                Unban
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
