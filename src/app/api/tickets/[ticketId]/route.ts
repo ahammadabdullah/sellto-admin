@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: { ticketId: string } }
 ) {
   try {
-    const { ticketId } = params;
+    const { ticketId } = await params;
 
     const ticket = await prisma.ticket.findUnique({
       where: {

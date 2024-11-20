@@ -18,6 +18,7 @@ import {
   truncateString,
   timeAgo,
   cn,
+  getFormattedDate,
 } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -30,8 +31,8 @@ export type sellarTickets = {
   name: string;
   subdomain: string;
   senderEmail: string;
-  createdAt: string;
-  status: "active" | "closed" | "pending reply";
+  createdAt: Date;
+  status: "open" | "closed";
 };
 export const columns: ColumnDef<sellarTickets>[] = [
   {
@@ -87,25 +88,6 @@ export const columns: ColumnDef<sellarTickets>[] = [
       );
     },
   },
-  //   {
-  //     accessorKey: "subdomain",
-  //     header: ({ column }) => (
-  //       <DataTableColumnHeader column={column} title="Subdomain" />
-  //     ),
-
-  //     cell: ({ row }) => {
-  //       const value: string = row.getValue("subdomain");
-  //       return (
-  //         <div className="font-medium">
-  //           {value}{" "}
-  //           <CopyButton
-  //             copyContent={value}
-  //             alertTitle="Subdomain Copied:"
-  //           ></CopyButton>
-  //         </div>
-  //       );
-  //     },
-  //   },
   {
     accessorKey: "senderEmail",
     header: ({ column }) => (
@@ -151,7 +133,7 @@ export const columns: ColumnDef<sellarTickets>[] = [
       const cell_value: Date = row.getValue("createdAt");
       return (
         <div className="flex flex-col">
-          <p>{dateFormatter(cell_value)}</p>
+          <p>{getFormattedDate(cell_value)}</p>
           <p className="text-xs text-muted-foreground opacity-85">
             {timeAgo(cell_value)}
           </p>
@@ -169,15 +151,13 @@ export const columns: ColumnDef<sellarTickets>[] = [
     cell: ({ row }) => {
       const cell_value: string = row.getValue("status");
       const className = {
-        active: "bg-[#1ED760]/20 text-[#1ED760] hover:bg-[#1ED760]/25",
+        open: "bg-[#1ED760]/20 text-[#1ED760] hover:bg-[#1ED760]/25",
         closed: "bg-[#FF5C5C]/20 text-[#FF5C5C] hover:bg-[#FF5C5C]/25",
-        pendingReply: "bg-[#FFAE5C]/20 text-[#FFAE5C] hover:bg-[#FFAE5C]/25",
       };
       return (
         <Badge
           className={cn(
-            cell_value === "pending reply" && className.pendingReply,
-            cell_value === "active" && className.active,
+            cell_value === "open" && className.open,
             cell_value === "closed" && className.closed,
             "cursor-default"
           )}
@@ -203,7 +183,9 @@ export const columns: ColumnDef<sellarTickets>[] = [
               console.log("link: /dashboard/products/" + rowData.id)
             }
           >
-            <MessageSquare size={22} />
+            <Link href={`/sellers/tickets/chat/${rowData.id}`}>
+              <MessageSquare size={22} />
+            </Link>
           </Button>
           <Button
             className="text-muted-foreground hover:bg-destructive hover:text-destructive-foreground"

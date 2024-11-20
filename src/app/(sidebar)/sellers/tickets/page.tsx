@@ -5,41 +5,74 @@ import { Ticket } from "lucide-react";
 import PageTitle from "@/components/ui/custom/PageTitle";
 import { DataTable } from "@/components/helpers/dataTable/data-table";
 import { columns, sellarTickets } from "./column";
+import prisma from "@/lib/db";
 
-async function getData(): Promise<sellarTickets[]> {
-  return [
-    {
-      id: "T1234",
-      logo: "/placeholder.svg?height=40&width=40",
-      name: "Acme Store",
-      subdomain: "acmestore",
-      senderEmail: "support@acmestore.com",
-      createdAt: "2023-06-15 14:30",
-      status: "active",
+// async function getData(): Promise<sellarTickets[]> {
+//   return [
+//     {
+//       id: "T1234",
+//       logo: "/placeholder.svg?height=40&width=40",
+//       name: "Acme Store",
+//       subdomain: "acmestore",
+//       senderEmail: "support@acmestore.com",
+//       createdAt: "2023-06-15 14:30",
+//       status: "active",
+//     },
+//     {
+//       id: "T5678",
+//       logo: "/placeholder.svg?height=40&width=40",
+//       name: "Globex Shop",
+//       subdomain: "globexshop",
+//       senderEmail: "help@globexshop.com",
+//       createdAt: "2023-06-14 09:15",
+//       status: "closed",
+//     },
+//     {
+//       id: "T9012",
+//       logo: "/placeholder.svg?height=40&width=40",
+//       name: "Initech Market",
+//       subdomain: "initechmarket",
+//       senderEmail: "support@initechmarket.com",
+//       createdAt: "2023-06-16 11:45",
+//       status: "pending reply",
+//     },
+//   ];
+// }
+
+async function getTicket() {
+  const res = await prisma.ticket.findMany({
+    where: {
+      type: "admin",
     },
-    {
-      id: "T5678",
-      logo: "/placeholder.svg?height=40&width=40",
-      name: "Globex Shop",
-      subdomain: "globexshop",
-      senderEmail: "help@globexshop.com",
-      createdAt: "2023-06-14 09:15",
-      status: "closed",
+    include: {
+      Shop: {
+        select: {
+          name: true,
+          subDomain: true,
+          favicon: true,
+          User: {
+            select: {
+              email: true,
+            },
+          },
+        },
+      },
     },
-    {
-      id: "T9012",
-      logo: "/placeholder.svg?height=40&width=40",
-      name: "Initech Market",
-      subdomain: "initechmarket",
-      senderEmail: "support@initechmarket.com",
-      createdAt: "2023-06-16 11:45",
-      status: "pending reply",
-    },
-  ];
+  });
+  return res.map((r) => ({
+    id: r.id,
+    logo: r.Shop.favicon || "",
+    name: r.Shop.name,
+    subdomain: r.Shop.subDomain,
+    senderEmail: r.Shop.User?.email || "",
+    createdAt: r.createdAt,
+    status: r.status,
+  }));
 }
 
 export default async function SellarTickets() {
-  const data = await getData();
+  const data = await getTicket();
+  console.log(data);
   return (
     <>
       <PageTitle

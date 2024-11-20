@@ -16,6 +16,7 @@ import {
   capitalizeFirstLetter,
   truncateString,
   timeAgo,
+  getFormattedDate,
 } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -28,7 +29,7 @@ export type shopApplication = {
   logo: string;
   subdomain: string;
   description: string;
-  stripeVerified: boolean;
+  stripeVerified?: boolean;
   appliedAt: Date | string;
 };
 
@@ -127,8 +128,8 @@ export const columns: ColumnDef<shopApplication>[] = [
       />
     ),
     cell: ({ row }) => {
-      const varified: boolean = row.getValue("stripeVerified");
-      return varified ? (
+      const verified: boolean = row.getValue("stripeVerified");
+      return verified ? (
         <CheckIcon className="size-5 text-green-500" />
       ) : (
         <X className="size-5 text-red-500" />
@@ -144,7 +145,7 @@ export const columns: ColumnDef<shopApplication>[] = [
       const cell_value: Date = row.getValue("appliedAt");
       return (
         <div className="flex flex-col">
-          <p>{dateFormatter(cell_value)}</p>
+          <p>{getFormattedDate(cell_value)}</p>
           <p className="text-xs text-muted-foreground opacity-85">
             {timeAgo(cell_value)}
           </p>

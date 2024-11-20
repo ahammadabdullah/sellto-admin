@@ -7,7 +7,7 @@ export async function POST(
   { params }: { params: { ticketId: string } }
 ) {
   try {
-    const { ticketId } = params;
+    const { ticketId } = await params;
     const { sender, content } = await req.json();
 
     if (!sender || !content) {
@@ -33,7 +33,7 @@ export async function GET(
   { params }: { params: { ticketId: string } }
 ) {
   try {
-    const { ticketId } = params;
+    const { ticketId } = await params;
 
     const messages = await prisma.message.findMany({
       where: {

@@ -57,3 +57,11 @@ export async function login(prevState: State, formData: FormData) {
     };
   }
 }
+export const getShop = async (id: string) => {
+  const res = await prisma.shop.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  return res;
+};
