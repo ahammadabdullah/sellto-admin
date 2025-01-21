@@ -12,7 +12,7 @@ const TicketData = async (ticketId: string) => {
 export default async function ContactPage({
   params,
 }: {
-  params: { ticketId: string };
+  params: Promise<{ ticketId: string }>;
 }) {
   const { ticketId } = await params;
   const chats = await getChatData(ticketId);

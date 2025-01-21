@@ -4,10 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { ticketId: string } }
+  {
+    params,
+  }: {
+    params: Promise<{ ticketId: string }>;
+  }
 ) {
   try {
-    const { ticketId } = await params;
+    const ticketId = (await params).ticketId;
     const { sender, content } = await req.json();
 
     if (!sender || !content) {
@@ -30,7 +34,7 @@ export async function POST(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { ticketId: string } }
+  { params }: { params: Promise<{ ticketId: string }> }
 ) {
   try {
     const { ticketId } = await params;
