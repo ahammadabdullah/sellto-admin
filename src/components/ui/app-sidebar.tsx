@@ -1,16 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
+import { signOut, useSession } from "next-auth/react";
 import {
   Sidebar,
   SidebarHeader,
@@ -25,33 +16,32 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-// import { selltoLogo as SelltoLogo } from "@/components/ui/custom/Logo";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-// import selltoLogo from "@/assets/sellto_logo.svg";
 import selltoIcon from "@/assets/icon.svg";
-// Menu items.
 
 import { LogOut, Bell, CreditCard, BadgeCheck, Sparkles } from "lucide-react";
 import { ChevronsUpDown, FileUser, Ticket, Store, Cog } from "lucide-react";
 const navItems = [
-  { icon: Store, label: "Sellars", url: "/sellars" },
+  { icon: Store, label: "Sellers", url: "/sellers" },
   {
     icon: FileUser,
-    label: "Sellar Applications",
-    url: "/sellars/applications",
+    label: "Seller Applications",
+    url: "/sellers/applications",
   },
-  { icon: Ticket, label: "Sellar Tickers", url: "/sellars/tickets" },
+  { icon: Ticket, label: "Seller Tickers", url: "/sellers/tickets" },
   { icon: Cog, label: "Settings", url: "/settings" },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
   const [activePage, setActivePage] = useState(pathname);
+  const { data: session } = useSession();
+  const user = session?.user;
   const {
     state,
     open,
@@ -70,6 +60,9 @@ export function AppSidebar() {
     if (isMobile) setOpenMobile(!openMobile);
     setActivePage(itemUrl);
   }
+  const handleLogOut = async () => {
+    await signOut({ redirectTo: "/login" });
+  };
   return (
     <Sidebar collapsible="icon" className="z-[100]">
       <SidebarHeader>
@@ -142,21 +135,24 @@ export function AppSidebar() {
             >
               {state === "expanded" ? (
                 <Avatar className="size-9">
-                  {/* <AvatarImage
-                        src={data.user.avatar}
-                        alt={data.user.name}
-                      /> */}
+                  <AvatarImage src={user?.image || ""} alt={"profile image"} />
                   <AvatarFallback className="">CN</AvatarFallback>
                 </Avatar>
               ) : (
-                <LogOut className="ml-2 size-4 group-hover/ed:text-destructive" />
+                <LogOut
+                  onClick={handleLogOut}
+                  className="ml-2 size-4 group-hover/ed:text-destructive"
+                />
               )}
 
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">Farhan</span>
-                <span className="truncate text-xs">darkid@gmail.com</span>
+                <span className="truncate font-semibold">{user?.name}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
-              <LogOut className="ml-auto size-4 group-hover/ed:text-destructive" />
+              <LogOut
+                onClick={handleLogOut}
+                className="ml-auto size-4 group-hover/ed:text-destructive"
+              />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

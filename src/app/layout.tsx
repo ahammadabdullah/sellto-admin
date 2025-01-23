@@ -112,7 +112,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "min-h-full bg-background font-sans antialiased  w-full ",
@@ -126,10 +126,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* <LandingNav /> */}
           {children}
           <ModeToggle />
-          <Toaster></Toaster>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

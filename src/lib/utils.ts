@@ -66,14 +66,14 @@ export function capitalizeFirstLetter(
 }
 
 export function timeAgo(date: Date | string): string {
-  const now = new Date();
-  const InputDate = typeof date === "string" ? new Date(date) : date;
-  if (!(InputDate instanceof Date) || isNaN(InputDate.getTime())) {
+  const inputDate = new Date(date);
+  if (isNaN(inputDate.getTime())) {
     return "Invalid date";
   }
-  if (InputDate > now) return "In the future";
+  const now = new Date();
+  if (inputDate > now) return "In the future";
 
-  const seconds = Math.floor((now.getTime() - InputDate.getTime()) / 1000);
+  const seconds = Math.floor((now.getTime() - inputDate.getTime()) / 1000);
 
   const intervals = [
     { label: "year", seconds: 31536000 },
@@ -118,4 +118,41 @@ export const parseString = (
     return result.join(delimiter);
   }
   return result;
+};
+
+export const getFormattedDate = (date: string | Date): string => {
+  console.log(date, "from getFormattedDate");
+  const newDate = new Date(date);
+
+  if (isNaN(newDate.getTime())) {
+    // Handle invalid date input
+    return "Invalid Date";
+  }
+
+  // Get the time in 12-hour format
+  let hours = newDate.getHours();
+  const minutes = newDate.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12 || 12; // Convert to 12-hour format
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  // Get the day and month
+  const day = newDate.getDate();
+  const month = newDate.toLocaleString("default", { month: "short" });
+
+  // Return formatted time and date
+  return `${hours}:${formattedMinutes} ${ampm} | ${day}-${month}`;
+};
+
+export const getTimeFromDate = (date: Date): string => {
+  const newDate = new Date(date);
+  let hours = newDate.getHours();
+  const minutes = newDate.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12 || 12;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  return `${hours}:${formattedMinutes} ${ampm}`;
 };
