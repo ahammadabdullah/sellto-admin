@@ -10,9 +10,9 @@ import {
   Palette,
 } from "lucide-react";
 const navItems = [
-  { icon: ShoppingBasket, label: "Sellars", url: "/sellars" },
-  { icon: Ticket, label: "Sellar Applications", url: "/sellars/applications" },
-  { icon: PackageSearch, label: "Sellar Tickers", url: "/sellars/tickets" },
+  { icon: ShoppingBasket, label: "Sellers", url: "/sellers" },
+  { icon: Ticket, label: "Sellar Applications", url: "/sellers/applications" },
+  { icon: PackageSearch, label: "Sellar Tickers", url: "/sellers/tickets" },
   { icon: Palette, label: "Settings", url: "/settings" },
 ];
 
