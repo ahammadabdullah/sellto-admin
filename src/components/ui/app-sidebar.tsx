@@ -105,7 +105,7 @@ export function AppSidebar() {
                       "h-11 [&>svg]:size-[1.3rem] rounded-none pl-4",
                       activePage === item.url
                         ? "bg-gradient-to-r from-primary/35  via-primary/10 via-25% hover:bg-transparent "
-                        : "text-muted-foreground hover:text-foreground  opacity-85 hover:opacity-100"
+                        : "text-muted-foreground hover:text-foreground  opacity-85 hover:bg-transparent hover:opacity-100 hover:bg-gradient-to-r from-secondary/80  to-transparent transition-all duration-300"
                     )}
                   >
                     <Link href={item.url}>

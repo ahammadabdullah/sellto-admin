@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { StatCard } from "@/components/stat-card";
+import { StatsCard } from "@/components/stats-card";
 import {
   ShoppingBag,
   AlertTriangle,
@@ -78,27 +78,27 @@ export function SellerDetailsProfile({
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
+        <StatsCard
           title="Total Orders"
           value={totalOrders}
           icon={<ShoppingBag className="h-4 w-4 text-muted-foreground" />}
         />
-        <StatCard
+        <StatsCard
           title="Total Warnings"
           value={totalWarnings}
           icon={<AlertTriangle className="h-4 w-4 text-muted-foreground" />}
         />
-        <StatCard
+        <StatsCard
           title="Total Reports"
           value={totalReports}
           icon={<Flag className="h-4 w-4 text-muted-foreground" />}
         />
-        <StatCard
+        <StatsCard
           title="Account Balance"
           value={`$${accountBalance.toFixed(2)}`}
           icon={<Wallet className="h-4 w-4 text-muted-foreground" />}
         />
-        <StatCard
+        <StatsCard
           title="Open Tickets"
           value={openTickets}
           icon={<TicketIcon className="h-4 w-4 text-muted-foreground" />}
