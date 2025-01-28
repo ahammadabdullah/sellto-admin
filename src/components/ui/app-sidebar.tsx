@@ -33,6 +33,7 @@ const navItems = [
     label: "Seller Applications",
     url: "/sellers/applications",
   },
+  { icon: FileUser, label: "Withdrawl Request", url: "/sellers/withdrawls" },
   { icon: Ticket, label: "Seller Tickers", url: "/sellers/tickets" },
   { icon: Cog, label: "Settings", url: "/settings" },
 ];

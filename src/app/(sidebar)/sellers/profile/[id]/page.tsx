@@ -1,4 +1,5 @@
 import { SellerDetailsProfile } from "./seller-details-profile";
+import { type AllOrders } from "./order-clmns";
 
 // mock data
 const generateMockProducts = (
@@ -51,6 +52,34 @@ const generateMockProducts = (
   });
 };
 
+const generateMockOrders = (count: number, shopId: string): AllOrders[] => {
+  const statuses = ["pending", "completed", "canceled", "delivered", "shipped"];
+  const customerNames = [
+    "John Smith",
+    "Emma Wilson",
+    "Michael Brown",
+    "Sarah Davis",
+    "James Miller",
+    "Lisa Anderson",
+  ];
+
+  return Array.from({ length: count }, (_, i) => {
+    const date = new Date(
+      Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000
+    );
+    return {
+      id: `ORD${i + 1}`,
+      customer_name:
+        customerNames[Math.floor(Math.random() * customerNames.length)],
+      createdAt: date,
+      updatedAt: date,
+      shopId,
+      status: statuses[Math.floor(Math.random() * statuses.length)],
+      revenue: Number((Math.random() * 500 + 50).toFixed(2)),
+    };
+  });
+};
+
 const generateMockSellerData = (id: string) => {
   const firstName = ["Jane", "John", "Alice", "Bob", "Emma", "James"][
     Math.floor(Math.random() * 6)
@@ -73,6 +102,7 @@ const generateMockSellerData = (id: string) => {
     pendingWithdrawal: Number((Math.random() * 10000).toFixed(2)),
     totalWithdrawn: Number((Math.random() * 50000).toFixed(2)),
     products: generateMockProducts(20, id, subdomain),
+    orders: generateMockOrders(50, id),
   };
 };
 

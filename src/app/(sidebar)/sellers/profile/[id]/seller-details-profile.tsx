@@ -21,9 +21,10 @@ import {
   Banknote,
   BaggageClaim,
 } from "lucide-react";
-import { columns, type Product } from "./columns";
+import { columns, type Product } from "./product-clmns";
 import { Button } from "@/components/ui/button";
 import { WithdrawalRequest } from "./withdrawal-request";
+import { columns as orderColumns, type AllOrders } from "./order-clmns";
 
 interface SellerDetailsProps {
   name: string;
@@ -37,6 +38,7 @@ interface SellerDetailsProps {
   pendingWithdrawal: number;
   totalWithdrawn: number;
   products: Product[];
+  orders: AllOrders[];
 }
 
 export function SellerDetailsProfile({
@@ -51,6 +53,7 @@ export function SellerDetailsProfile({
   pendingWithdrawal,
   totalWithdrawn,
   products,
+  orders,
 }: SellerDetailsProps) {
   return (
     <div className="space-y-6">
@@ -137,8 +140,18 @@ export function SellerDetailsProfile({
         />
       </div>
       <WithdrawalRequest amount={pendingWithdrawal} />
-      <div className="bg-background rounded p-4 border">
-        <DataTable columns={columns} data={products} pagination={true} />
+      <div className="py-2">
+        <h2 className="text-3xl font-medium mb-4 font-clash">Products</h2>
+        <div className="bg-background rounded p-4 border">
+          <DataTable columns={columns} data={products} pagination={true} />
+        </div>
+      </div>
+
+      <div className="py-2">
+        <h2 className="text-3xl font-medium mb-4 font-clash">Orders</h2>
+        <div className="bg-background rounded p-4 border">
+          <DataTable columns={orderColumns} data={orders} pagination={true} />
+        </div>
       </div>
 
       {/* <Card>

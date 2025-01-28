@@ -22,20 +22,24 @@ import {
 import { cn } from "@/lib/utils";
 // import { DataTableViewOptions } from "@/components/helpers/DataTableViewOptions";
 import { DataTablePagination } from "@/components/helpers/dataTable/DataTablePagination";
+import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   className?: string;
   pagination?: boolean;
+  defaultPageSize?: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   className,
-  pagination,
+  pagination = false,
+  defaultPageSize = 10,
 }: DataTableProps<TData, TValue>) {
+  const [pageSize, setPageSize] = useState(defaultPageSize);
   // sorting state
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
