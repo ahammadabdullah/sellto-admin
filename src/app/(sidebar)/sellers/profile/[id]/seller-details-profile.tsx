@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DataTable } from "@/components/helpers/dataTable/data-table";
 import { StatsCard } from "@/components/stats-card";
 import {
   ShoppingBag,
@@ -11,15 +18,12 @@ import {
   TicketIcon,
   Package,
   ExternalLink,
-  Eye,
+  Banknote,
+  BaggageClaim,
 } from "lucide-react";
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  stock: number;
-}
+import { columns, type Product } from "./columns";
+import { Button } from "@/components/ui/button";
+import { WithdrawalRequest } from "./withdrawal-request";
 
 interface SellerDetailsProps {
   name: string;
@@ -30,6 +34,8 @@ interface SellerDetailsProps {
   totalReports: number;
   accountBalance: number;
   openTickets: number;
+  pendingWithdrawal: number;
+  totalWithdrawn: number;
   products: Product[];
 }
 
@@ -42,6 +48,8 @@ export function SellerDetailsProfile({
   totalReports,
   accountBalance,
   openTickets,
+  pendingWithdrawal,
+  totalWithdrawn,
   products,
 }: SellerDetailsProps) {
   return (
@@ -63,15 +71,16 @@ export function SellerDetailsProfile({
             <div>
               <CardTitle className="text-2xl">{name}</CardTitle>
               <p className="text-sm text-muted-foreground">ID: {id}</p>
-              <Badge variant="outline" className="mt-2 p-2 px-4">
-                {subdomain}.example.com{" "}
-                <Link
-                  href={`https://${subdomain}.example.com`}
-                  className="ml-2"
-                >
-                  <ExternalLink className="size-4 text-muted-foreground" />
-                </Link>
-              </Badge>
+              <Link
+                href={`https://${subdomain}.sellto.io`}
+                target="_blank"
+                className="hover:opacity-55 transition-opacity"
+              >
+                <Badge variant="outline" className="mt-2 p-2 px-4">
+                  {subdomain}.sellto.io{" "}
+                  <ExternalLink className="size-4 text-muted-foreground ml-2" />
+                </Badge>
+              </Link>
             </div>
           </div>
         </CardHeader>
@@ -81,31 +90,58 @@ export function SellerDetailsProfile({
         <StatsCard
           title="Total Orders"
           value={totalOrders}
+          subtitle="Total number of orders completed"
           icon={<ShoppingBag className="h-4 w-4 text-muted-foreground" />}
         />
         <StatsCard
           title="Total Warnings"
           value={totalWarnings}
+          subtitle="Number of warnings received"
           icon={<AlertTriangle className="h-4 w-4 text-muted-foreground" />}
         />
         <StatsCard
           title="Total Reports"
           value={totalReports}
+          subtitle="Number of reports filed by shop customers"
           icon={<Flag className="h-4 w-4 text-muted-foreground" />}
-        />
-        <StatsCard
-          title="Account Balance"
-          value={`$${accountBalance.toFixed(2)}`}
-          icon={<Wallet className="h-4 w-4 text-muted-foreground" />}
         />
         <StatsCard
           title="Open Tickets"
           value={openTickets}
+          subtitle="Active support tickets"
           icon={<TicketIcon className="h-4 w-4 text-muted-foreground" />}
         />
+        <StatsCard
+          title="Total Products"
+          value={products.length}
+          subtitle="Total number of products listed"
+          icon={<Package className="h-4 w-4 text-muted-foreground" />}
+        />
+        <StatsCard
+          title="Account Balance"
+          value={`$${accountBalance}`}
+          subtitle="Shop's current available balance"
+          icon={<Wallet className="h-4 w-4 text-muted-foreground" />}
+        />
+        <StatsCard
+          title="Pending Withdrawal"
+          value={`$${pendingWithdrawal}`}
+          icon={<Banknote className="h-4 w-4 text-muted-foreground" />}
+          subtitle="Pending withdrawal requests amount"
+        />
+        <StatsCard
+          title="Total Money Withdrawn"
+          value={`$${totalWithdrawn}`}
+          icon={<BaggageClaim className="h-4 w-4 text-muted-foreground" />}
+          subtitle="Total withdrawl amount approved to date"
+        />
+      </div>
+      <WithdrawalRequest amount={pendingWithdrawal} />
+      <div className="bg-background rounded p-4 border">
+        <DataTable columns={columns} data={products} pagination={true} />
       </div>
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Products</CardTitle>
         </CardHeader>
@@ -145,7 +181,7 @@ export function SellerDetailsProfile({
             ))}
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 }

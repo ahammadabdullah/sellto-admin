@@ -1,21 +1,82 @@
-import { SellerDetailsProfile } from "@/components/seller-details-profile";
+import { SellerDetailsProfile } from "./seller-details-profile";
 
-// This would typically come from an API or database
-const mockSellerData = {
-  name: "Jane Doe",
-  subdomain: "jane-store",
-  id: "SELLER123",
-  totalOrders: 1234,
-  totalWarnings: 2,
-  totalReports: 1,
-  accountBalance: 5678.9,
-  openTickets: 3,
-  products: [
-    { id: "P1", name: "Premium Widget", price: 29.99, stock: 50 },
-    { id: "P2", name: "Deluxe Gadget", price: 49.99, stock: 25 },
-    { id: "P3", name: "Super Gizmo", price: 99.99, stock: 0 },
-  ],
+// mock data
+const generateMockProducts = (
+  count: number,
+  shopId: string,
+  subdomain: string
+) => {
+  const productTypes = [
+    "Widget",
+    "Gadget",
+    "Gizmo",
+    "Tool",
+    "Device",
+    "Accessory",
+  ];
+  const adjectives = [
+    "Premium",
+    "Deluxe",
+    "Super",
+    "Ultra",
+    "Advanced",
+    "Professional",
+  ];
+
+  return Array.from({ length: count }, (_, i) => {
+    const type =
+      productTypes[
+        Math.floor(Math.random() * productTypes.length)
+      ].toLowerCase();
+    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const price = Math.floor(Math.random() * 200) + 9.99;
+    const stock = Math.random() > 0.1 ? Math.floor(Math.random() * 100) : 0;
+    const date = new Date(
+      Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000
+    );
+
+    return {
+      id: `P${i + 1}`,
+      productName: `${adj} ${type}`,
+      price: Number(price.toFixed(2)),
+      stock,
+      image: "/placeholder.png",
+      createdAt: date,
+      updatedAt: date,
+      type,
+      shopId,
+      shortDescription: `A ${adj.toLowerCase()} ${type} for everyday use`,
+      shopSubDomain: subdomain,
+    };
+  });
 };
+
+const generateMockSellerData = (id: string) => {
+  const firstName = ["Jane", "John", "Alice", "Bob", "Emma", "James"][
+    Math.floor(Math.random() * 6)
+  ];
+  const lastName = ["Smith", "Doe", "Johnson", "Williams", "Brown", "Jones"][
+    Math.floor(Math.random() * 6)
+  ];
+  const name = `${firstName} ${lastName}`;
+  const subdomain = `${firstName.toLowerCase()}-store`;
+
+  return {
+    name,
+    subdomain,
+    id,
+    totalOrders: Math.floor(Math.random() * 5000),
+    totalWarnings: Math.floor(Math.random() * 5),
+    totalReports: Math.floor(Math.random() * 3),
+    accountBalance: Number((Math.random() * 10000).toFixed(2)),
+    openTickets: Math.floor(Math.random() * 5),
+    pendingWithdrawal: Number((Math.random() * 10000).toFixed(2)),
+    totalWithdrawn: Number((Math.random() * 50000).toFixed(2)),
+    products: generateMockProducts(20, id, subdomain),
+  };
+};
+
+const mockSellerData = generateMockSellerData("SELLER123");
 
 export default function SellerDetailsPage({
   params,
