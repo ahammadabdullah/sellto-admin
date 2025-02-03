@@ -38,9 +38,9 @@ model Ticket {
 model Message {
   id        String        @id @default(cuid())
   ticketId  String
-  sender    MessageSender @default(user)
   content   String
   createdAt DateTime      @default(now())
+  sender    MessageSender @default(user)
   ticket    Ticket        @relation(fields: [ticketId], references: [id])
 }
 
@@ -65,6 +65,7 @@ model Shop {
   Product_Product_shopSubDomainToShop Product[]  @relation("Product_shopSubDomainToShop")
   Ticket                              Ticket[]
   User                                User?      @relation("userToShop")
+  Withdraw                            Withdraw[]
 }
 
 model Merchant {
@@ -147,6 +148,15 @@ model WaitList {
   createdAt DateTime @default(now())
 }
 
+model Withdraw {
+  id        String         @id
+  amount    Float
+  shopId    String
+  createdAt DateTime       @default(now())
+  status    WithdrawStatus @default(pending)
+  Shop      Shop           @relation(fields: [shopId], references: [id])
+}
+
 enum ShopStatus {
   pending
   clean
@@ -187,4 +197,10 @@ enum MessageSender {
   user
   admin
   seller
+}
+
+enum WithdrawStatus {
+  pending
+  completed
+  cancelled
 }

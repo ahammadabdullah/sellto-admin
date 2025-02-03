@@ -17,12 +17,6 @@ type WithdrawalData = {
   createdAt: string;
 };
 
-const statusOrder = {
-  pending: 1,
-  approved: 2,
-  declined: 3,
-};
-
 export const columns: ColumnDef<WithdrawalData>[] = [
   {
     accessorKey: "shopId",

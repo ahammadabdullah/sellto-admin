@@ -1,8 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-
 import { CheckIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,13 +8,7 @@ import { CopyButton } from "@/components/ui/custom/CopyButton";
 import { DataTableColumnHeader } from "@/components/helpers/dataTable/DataTableColumnHeader";
 import { ColumnDef } from "@tanstack/react-table";
 
-import {
-  dateFormatter,
-  capitalizeFirstLetter,
-  truncateString,
-  timeAgo,
-  getFormattedDate,
-} from "@/lib/utils";
+import { truncateString, timeAgo, getFormattedDate } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // This type is used to define the shape of our data.
