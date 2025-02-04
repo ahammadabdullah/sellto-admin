@@ -1,5 +1,3 @@
-// import Image from "next/image";
-// import { Button } from "@/components/ui/button";
 import { FileUser } from "lucide-react";
 
 import PageTitle from "@/components/ui/custom/PageTitle";
@@ -10,12 +8,7 @@ import prisma from "@/lib/db";
 async function getWithdrawals() {
   const data = await prisma.withdraw.findMany({
     include: {
-      Shop: {
-        select: {
-          balance: true,
-          name: true,
-        },
-      },
+      Shop: true,
     },
   });
   return data.map((d) => ({
@@ -24,6 +17,8 @@ async function getWithdrawals() {
     shopName: d.Shop?.name,
     balance: d.Shop?.balance,
     requestAmount: d.amount,
+    stripeAccountId: d.Shop.stripeAccountId,
+    stripeStatus: d.Shop.stripeStatus,
     status: d.status,
     createdAt: d.createdAt.toISOString(),
   }));
@@ -37,7 +32,7 @@ export default async function Withdrawals() {
       <PageTitle
         Icon={FileUser}
         title="Withdrawal Requests"
-        subTitle={`(total ${withdrawals.length} requests)`}
+        subTitle={`(total ${withdrawals.length || 0} requests)`}
       />
 
       <div className="bg-background rounded-lg p-4 border">

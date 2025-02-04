@@ -1,6 +1,8 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import prisma from "./db";
+import { WithdrawStatus } from "@prisma/client";
 
 export const getChatData = async (ticketId: string) => {
   const res = await fetch(
@@ -16,3 +18,17 @@ export const getChatData = async (ticketId: string) => {
 export async function revalidateMessage() {
   revalidateTag("ticketMessage");
 }
+
+export const updateWithdrawalStatus = async (
+  withdrawalId: string,
+  status: WithdrawStatus
+) => {
+  return await prisma.withdraw.update({
+    where: {
+      id: withdrawalId,
+    },
+    data: {
+      status,
+    },
+  });
+};

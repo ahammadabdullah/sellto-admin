@@ -13,14 +13,49 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import type { Withdrawal } from "./columns";
+import { updateWithdrawalStatus } from "@/lib/api";
 
 export function WithdrawalActions({ withdrawal }: { withdrawal: Withdrawal }) {
   const [isDeclineOpen, setIsDeclineOpen] = useState(false);
   const [declineReason, setDeclineReason] = useState("");
 
   const handleApprove = async () => {
+    if (withdrawal.balance < withdrawal.requestAmount) {
+      toast({
+        title: "Merchant does not have sufficient balance",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (!withdrawal.stripeAccountId) {
+      toast({
+        title: "Stripe account not linked",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (withdrawal.stripeStatus !== "accepted") {
+      toast({
+        title: "Stripe account not verified",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      // Add your API call here to approve the withdrawal
+      const res = await fetch("/api/stripe/withdraw", {
+        method: "POST",
+        body: JSON.stringify({
+          amount: withdrawal.requestAmount,
+          stripeAccountId: withdrawal.stripeAccountId,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      const update = await updateWithdrawalStatus(withdrawal.id, "accepted");
       toast({
         title: "Withdrawal request approved successfully",
         variant: "default",
@@ -35,7 +70,7 @@ export function WithdrawalActions({ withdrawal }: { withdrawal: Withdrawal }) {
 
   const handleDecline = async () => {
     try {
-      // Add your API call here to decline the withdrawal with declineReason
+      const update = await updateWithdrawalStatus(withdrawal.id, "accepted");
       toast({
         title: "Withdrawal request declined",
         variant: "default",

@@ -60,6 +60,9 @@ model Shop {
   subDomain                           String     @unique
   balance                             Float      @default(0)
   status                              ShopStatus @default(pending)
+  stripeAccountId                     String?
+  stripeStatus                        String?
+  stripeLoginLink                     String?
   Order                               Order[]
   Product_Product_shopIdToShop        Product[]  @relation("Product_shopIdToShop")
   Product_Product_shopSubDomainToShop Product[]  @relation("Product_shopSubDomainToShop")
@@ -203,4 +206,5 @@ enum WithdrawStatus {
   pending
   completed
   cancelled
+  accepted
 }

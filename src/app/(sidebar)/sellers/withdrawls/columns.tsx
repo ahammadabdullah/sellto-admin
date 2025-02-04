@@ -15,6 +15,8 @@ type WithdrawalData = {
   requestAmount: number;
   status: string;
   createdAt: string;
+  stripeAccountId: string | null;
+  stripeStatus: string | null;
 };
 
 export const columns: ColumnDef<WithdrawalData>[] = [
@@ -94,7 +96,7 @@ export const columns: ColumnDef<WithdrawalData>[] = [
         <WithdrawalActions
           withdrawal={
             row.original as WithdrawalData & {
-              status: "pending" | "approved" | "declined";
+              status: "pending" | "approved" | "canceled | completed";
             }
           }
         />
@@ -104,5 +106,5 @@ export const columns: ColumnDef<WithdrawalData>[] = [
 ];
 
 export type Withdrawal = WithdrawalData & {
-  status: "pending" | "approved" | "declined";
+  status: "pending" | "approved" | "canceled | completed";
 };
