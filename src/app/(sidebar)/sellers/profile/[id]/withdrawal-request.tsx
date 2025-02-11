@@ -8,6 +8,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import Link from "next/link";
 
 interface WithdrawalRequestProps {
   amount: number;
@@ -27,17 +28,8 @@ export function WithdrawalRequest({ amount }: WithdrawalRequestProps) {
       <CardContent className="flex items-center justify-between">
         <div className="text-2xl font-semibold">${amount.toFixed(2)}</div>
         <div className="flex gap-3">
-          <Button
-            onClick={() => console.log("Decline withdrawal:", amount)}
-            variant={"destructive"}
-          >
-            Decline
-          </Button>
-          <Button
-            onClick={() => console.log("Approve withdrawal:", amount)}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            Approve Withdrawal
+          <Button className="bg-green-600 hover:bg-green-700">
+            <Link href={"/sellers/withdrawls"}>Go to withdrawal Request</Link>
           </Button>
         </div>
       </CardContent>

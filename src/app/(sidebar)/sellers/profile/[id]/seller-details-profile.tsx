@@ -153,48 +153,6 @@ export function SellerDetailsProfile({
           <DataTable columns={orderColumns} data={orders} pagination={true} />
         </div>
       </div>
-
-      {/* <Card>
-        <CardHeader>
-          <CardTitle>Products</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="flex items-center justify-between"
-              >
-                <div className="flex items-center space-x-4">
-                  <Package className="h-6 w-6 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">{product.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      ${product.price.toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Badge
-                    variant={product.stock > 0 ? "default" : "destructive"}
-                  >
-                    {product.stock > 0
-                      ? `In Stock: ${product.stock}`
-                      : "Out of Stock"}
-                  </Badge>
-                  <Link
-                    href={`/products/${product.id}`}
-                    className="flex items-center space-x-1 text-sm text-muted-foreground hover:text-primary"
-                  >
-                    <Eye className="h-4 w-4" />
-                    <span>View</span>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card> */}
     </div>
   );
 }
