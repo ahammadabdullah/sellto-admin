@@ -1,5 +1,6 @@
 "use client";
 
+import { Order } from "@prisma/client";
 import {
   Line,
   LineChart,
@@ -9,17 +10,12 @@ import {
   YAxis,
 } from "recharts";
 
-const data = [
-  { date: "Jan 1", volume: 1000 },
-  { date: "Jan 15", volume: 1200 },
-  { date: "Feb 1", volume: 1500 },
-  { date: "Feb 15", volume: 1800 },
-  { date: "Mar 1", volume: 2000 },
-  { date: "Mar 15", volume: 2200 },
-  { date: "Apr 1", volume: 2400 },
-];
+export function OrderVolumeChart({ orders }: { orders: Order[] }) {
+  const data = orders.map((order) => ({
+    date: order.createdAt.toLocaleDateString(),
+    volume: order.revenue,
+  }));
 
-export function OrderVolumeChart() {
   return (
     <ResponsiveContainer width="100%" height={350}>
       <LineChart data={data}>

@@ -18,6 +18,7 @@ import { Flag } from "lucide-react";
 import { DollarSign } from "lucide-react";
 import { TicketIcon } from "lucide-react";
 import { OrderVolumeChart } from "@/components/order-volume-chart";
+import prisma from "@/lib/db";
 const navItems = [
   { icon: ShoppingBasket, label: "Sellers", url: "/sellers" },
   { icon: Ticket, label: "Sellar Applications", url: "/sellers/applications" },
@@ -25,7 +26,44 @@ const navItems = [
   { icon: Palette, label: "Settings", url: "/settings" },
 ];
 
-export default function Home() {
+const getStatistics = async () => {
+  const totalBalance = await prisma.shop.aggregate({
+    _sum: {
+      balance: true,
+    },
+  });
+  const totalSellers = await prisma.shop.count();
+  const totalApplications = await prisma.user.findMany({
+    where: {
+      role: "merchant",
+      status: "pending",
+    },
+  });
+  const totalTickets = await prisma.ticket.count({
+    where: {
+      status: "open",
+    },
+  });
+  const totalTraffic = 1000;
+  const reports = 10;
+  return {
+    totalBalance: totalBalance._sum.balance,
+    totalSellers,
+    totalApplications: totalApplications.length,
+    totalTickets,
+    totalTraffic,
+    reports,
+  };
+};
+
+const getOrders = async () => {
+  const orders = await prisma.order.findMany();
+  return orders;
+};
+
+export default async function Home() {
+  const stats = await getStatistics();
+  const orders = await getOrders();
   return (
     <>
       <div className="container ">
@@ -51,37 +89,37 @@ export default function Home() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <StatsCard
             title="Total Balance Available"
-            value="$124,750.50"
+            value={`$${stats.totalBalance}`}
             subtitle="Current funds across all accounts"
             icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
           />
           <StatsCard
             title="Open Seller Tickets"
-            value="23"
+            value={stats.totalTickets}
             subtitle="Unresolved issues from sellers"
             icon={<TicketIcon className="h-4 w-4 text-muted-foreground" />}
           />
           <StatsCard
             title="Open Customer Reports"
-            value="15"
+            value={stats.reports}
             subtitle="Pending customer complaints"
             icon={<Flag className="h-4 w-4 text-muted-foreground" />}
           />
           <StatsCard
             title="Total Seller Count"
-            value="1,234"
+            value={stats.totalSellers}
             subtitle="Active sellers on the platform"
             icon={<Users className="h-4 w-4 text-muted-foreground" />}
           />
           <StatsCard
             title="Total Seller Applications"
-            value="78"
+            value={stats.totalApplications}
             subtitle="Pending seller registrations"
             icon={<FileText className="h-4 w-4 text-muted-foreground" />}
           />
           <StatsCard
             title="Total website visits"
-            value="78"
+            value={stats.totalTraffic}
             subtitle="Total website visits"
             icon={<FileText className="h-4 w-4 text-muted-foreground" />}
           />
@@ -92,7 +130,7 @@ export default function Home() {
               <CardTitle>Order Volume Over Time</CardTitle>
             </CardHeader>
             <CardContent>
-              <OrderVolumeChart />
+              <OrderVolumeChart orders={orders} />
             </CardContent>
           </Card>
         </div>
